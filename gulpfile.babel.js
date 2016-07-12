@@ -511,11 +511,11 @@ gulp.task('build:client', ['transpile:client', 'styles', 'html', 'constant', 'bu
 });
 
 gulp.task('html', function() {
-    return gulp.src(`${clientPath}/{app,components}/**/*.html`)
-        .pipe(plugins.angularTemplatecache({
-            module: 'twilioApp'
-        }))
-        .pipe(gulp.dest('.tmp'));
+    // return gulp.src(`${clientPath}/{app,components}/**/*.html`)
+    //     .pipe(plugins.angularTemplatecache({
+    //         module: 'twilioApp'
+    //     }))
+    //     .pipe(gulp.dest('.tmp'));
 });
 
 gulp.task('constant', function() {
