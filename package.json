@@ -1,7 +1,7 @@
 {
   "name": "twiML",
   "version": "0.0.0",
-  "main": "server/app.js",
+  "start": "server/app.js",
   "dependencies": {
     "babel-polyfill": "^6.7.2",
     "babel-runtime": "^6.6.1",
