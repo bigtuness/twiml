@@ -1,11 +1,12 @@
 'use strict';
 
-import mongoose from 'mongoose';
+import twilio from 'twilio';
 
-var CallSchema = new mongoose.Schema({
-  name: String,
-  info: String,
-  active: Boolean
-});
+function Client() {
+  let accountSid = 'AC41786153140c4c2e55889b822f172059';
+  let authToken = '3bfb4b6a5de82523f4c18ac334a058b2';
 
-export default mongoose.model('Call', CallSchema);
+  return twilio(accountSid, authToken)
+}
+
+module.exports = Client;

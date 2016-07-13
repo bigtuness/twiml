@@ -10,7 +10,10 @@
 'use strict';
 
 import _ from 'lodash';
-import Call from './call.model';
+import twilio from 'twilio';
+
+const accountSid = 'AC41786153140c4c2e55889b822f172059';
+const authToken = '3bfb4b6a5de82523f4c18ac334a058b2';
 
 function respondWithResult(res, statusCode) {
   statusCode = statusCode || 200;
@@ -61,42 +64,46 @@ function handleError(res, statusCode) {
 
 // Gets a list of Calls
 export function index(req, res) {
-  return Call.find().exec()
-    .then(respondWithResult(res))
-    .catch(handleError(res));
 }
 
-// Gets a single Call from the DB
-export function show(req, res) {
-  return Call.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
+export function getToken(req, res) {
+  var capability = new twilio.Capability(accountSid, authToken);
+  capability.allowClientIncoming('FRSD');
+  // capability.allowClientOutgoing('AC2845e550456810a56dfa460a361449b4');
+  var token = {
+    token: capability.generate()
+  };
+  var response = respondWithResult(res);
+  return response(token);
 }
 
-// Creates a new Call in the DB
-export function create(req, res) {
-  return Call.create(req.body)
-    .then(respondWithResult(res, 201))
-    .catch(handleError(res));
+export function makeCall(req, res) {
+  var url = 'http://' + req.headers.host + '/outbound';
+  var client = twilio(accountSid, authToken);
+
+  client.makeCall({
+      to: req.body.to,
+      from: req.body.from,
+      url: url
+  }, (err, message) => {
+      if (err) {
+        handleError(res, 500)(err);
+      } else {
+        let twiml = new twilio.TwimlResponse();
+        twiml.say('Test call success', {
+            voice:'woman',
+            language:'en-gb'
+        });
+        res.set('Content-Type', 'text/xml');
+        res.status(200).send(twiml.toString());
+      }
+  });
 }
 
 // Updates an existing Call in the DB
 export function update(req, res) {
-  if (req.body._id) {
-    delete req.body._id;
-  }
-  return Call.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(saveUpdates(req.body))
-    .then(respondWithResult(res))
-    .catch(handleError(res));
 }
 
 // Deletes a Call from the DB
 export function destroy(req, res) {
-  return Call.findById(req.params.id).exec()
-    .then(handleEntityNotFound(res))
-    .then(removeEntity(res))
-    .catch(handleError(res));
 }
