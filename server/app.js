@@ -4,6 +4,10 @@
 
 'use strict';
 
+require('babel-register')({
+  "presets": ["es2015"]
+});
+
 import express from 'express';
 import mongoose from 'mongoose';
 mongoose.Promise = require('bluebird');
