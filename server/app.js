@@ -4,9 +4,10 @@
 
 'use strict';
 
-require('babel-register')({
-  "presets": ["es2015"]
-});
+// require('babel/register')({
+//   "presets": ["es2015"]
+// });
+require('babel-core/register');
 
 import express from 'express';
 import mongoose from 'mongoose';
