@@ -69,16 +69,16 @@ export function makeCall(req, res) {
   // res.set('Content-Type', 'text/xml');
   // res.status(200).send(twiml.toString());
 
-  var string = '<Response><Play>https://ia902605.us.archive.org/27/items/ghost_stories_001_librivox/gs001-tales_of_treasure_anon_bd_64kb.mp3</Play></Response>';
-  res.set('Content-Type', 'text/xml');
-  res.status(200).send(string);
+  // var string = '<Response><Play>https://ia902605.us.archive.org/27/items/ghost_stories_001_librivox/gs001-tales_of_treasure_anon_bd_64kb.mp3</Play></Response>';
+  // res.set('Content-Type', 'text/xml');
+  // res.status(200).send(string);
 
-//   let twiml = new twilio.TwimlResponse();
-//         twiml.say('Test call success', {
-//             voice:'woman',
-//             language:'en-gb'
-//         });
-//         res.set('Content-Type', 'text/xml');
-//         res.status(200).send(twiml.toString());
+  let twiml = new twilio.TwimlResponse();
+        twiml.say('Test call success', {
+            voice:'woman',
+            language:'en-gb'
+        });
+        res.set('Content-Type', 'text/xml');
+        res.status(200).send(twiml.toString());
 
 }
