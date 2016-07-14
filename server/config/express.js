@@ -43,6 +43,13 @@ export default function(app) {
   app.use(bodyParser.json());
   app.use(methodOverride());
   app.use(cookieParser());
+  app.use(session({
+    secret: 'secret',
+    name: 'browser-calls',
+    cookie: { maxAge: 60000 },
+    resave: true,
+    saveUninitialized: true
+  }));
 
   /**
    * Lusca - express server security

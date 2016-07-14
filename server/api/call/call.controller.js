@@ -1,12 +1,3 @@
-/**
- * Using Rails-like standard naming convention for endpoints.
- * GET     /api/calls              ->  index
- * POST    /api/calls              ->  create
- * GET     /api/calls/:id          ->  show
- * PUT     /api/calls/:id          ->  update
- * DELETE  /api/calls/:id          ->  destroy
- */
-
 'use strict';
 
 import _ from 'lodash';
@@ -24,37 +15,6 @@ function respondWithResult(res, statusCode) {
   };
 }
 
-function saveUpdates(updates) {
-  return function(entity) {
-    var updated = _.merge(entity, updates);
-    return updated.save()
-      .then(updated => {
-        return updated;
-      });
-  };
-}
-
-function removeEntity(res) {
-  return function(entity) {
-    if (entity) {
-      return entity.remove()
-        .then(() => {
-          res.status(204).end();
-        });
-    }
-  };
-}
-
-function handleEntityNotFound(res) {
-  return function(entity) {
-    if (!entity) {
-      res.status(404).end();
-      return null;
-    }
-    return entity;
-  };
-}
-
 function handleError(res, statusCode) {
   statusCode = statusCode || 500;
   return function(err) {
@@ -62,14 +22,10 @@ function handleError(res, statusCode) {
   };
 }
 
-// Gets a list of Calls
-export function index(req, res) {
-}
-
 export function getToken(req, res) {
   var capability = new twilio.Capability(accountSid, authToken);
   capability.allowClientIncoming('FRSD');
-  // capability.allowClientOutgoing('AC2845e550456810a56dfa460a361449b4');
+  capability.allowClientOutgoing('APb7ad2e3b60740ec4bad42e3c98659238');
   var token = {
     token: capability.generate()
   };
@@ -78,32 +34,34 @@ export function getToken(req, res) {
 }
 
 export function makeCall(req, res) {
-  var url = 'http://' + req.headers.host + '/outbound';
-  var client = twilio(accountSid, authToken);
+  // var url = 'http://' + req.headers.host;
+  // var client = twilio(accountSid, authToken);
 
-  client.makeCall({
-      to: req.body.to,
-      from: req.body.from,
-      url: url
-  }, (err, message) => {
-      if (err) {
-        handleError(res, 500)(err);
-      } else {
-        let twiml = new twilio.TwimlResponse();
-        twiml.say('Test call success', {
-            voice:'woman',
-            language:'en-gb'
-        });
-        res.set('Content-Type', 'text/xml');
-        res.status(200).send(twiml.toString());
-      }
-  });
-}
+  // client.makeCall({
+  //     to: req.body.to,
+  //     from: req.body.from,
+  //     url: url
+  // }, (err, message) => {
+  //     if (err) {
+  //       handleError(res, 500)(err);
+  //     } else {
+  //       let twiml = new twilio.TwimlResponse();
+  //       twiml.say('Test call success', {
+  //           voice:'woman',
+  //           language:'en-gb'
+  //       });
+  //       res.set('Content-Type', 'text/xml');
+  //       res.status(200).send(twiml.toString());
+  //     }
+  // });
+  var phoneNumber = req.body.phoneNumber;
+  var callerId = req.body.callerId;
 
-// Updates an existing Call in the DB
-export function update(req, res) {
-}
-
-// Deletes a Call from the DB
-export function destroy(req, res) {
+  var twiml = new twilio.TwimlResponse();
+  var numberDialer = function(dial) {
+    dial.number(phoneNumber);
+  }
+  twiml.dial({callerId : callerId}, numberDialer);
+  res.set('Content-Type', 'text/xml');
+  res.status(200).send(twiml.toString());
 }
